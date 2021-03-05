@@ -19,8 +19,9 @@ defmodule <%= namespace %>.Mixfile do
   use Mix.Project
 
   @version "<%= version %>"
+  @source_url "https://github.com/googleapis/elixir-google-api/tree/master/clients/<%= library_name %>"
 
-  def project() do
+  def project do
     [
       app: :google_api_<%= library_name %>,
       version: @version,
@@ -30,15 +31,16 @@ defmodule <%= namespace %>.Mixfile do
       description: description(),
       package: package(),
       deps: deps(),
-      source_url: "https://github.com/googleapis/elixir-google-api/tree/master/clients/<%= library_name %>"
+      docs: docs(),
+      source_url: @source_url
     ]
   end
 
-  def application() do
+  def application do
     [extra_applications: [:logger]]
   end
 
-  defp deps() do
+  defp deps do
     [
       {:google_gax, "~> 0.4"},
 
@@ -46,21 +48,40 @@ defmodule <%= namespace %>.Mixfile do
     ]
   end
 
-  defp description() do
+  defp description do
     """
     <%= description %>
     """
   end
 
-  defp package() do
+  defp package do
     [
       files: ["lib", "mix.exs", "README*", "LICENSE"],
       maintainers: ["Jeff Ching", "Daniel Azuma"],
       licenses: ["Apache 2.0"],
       links: %{
-        "GitHub" => "https://github.com/googleapis/elixir-google-api/tree/master/clients/<%= library_name %>",
+        "GitHub" => @source_url,
         "Homepage" => "<%= docs_link %>"
       }
+    ]
+  end
+
+  defp docs do
+    [
+      groups_for_modules: [
+        Api: ~r/<%= namespace %>.V1.Api/,
+        Models: ~r/<%= namespace %>.V1.Model/,
+        Client: [
+          <%= namespace %>.V1,
+          <%= namespace %>.V1.Connection
+        ]
+      ],
+      nest_modules_by_prefix: [
+        <%= namespace %>,
+        <%= namespace %>.V1.Api,
+        <%= namespace %>.V1.Model
+      ],
+      source_url_pattern: "#{@source_url}/%{path}#L%{line}"
     ]
   end
 end
